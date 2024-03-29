@@ -3,8 +3,9 @@ import tkinter
 import os
 from dotenv import load_dotenv
 import requests
-import json
 from PIL import Image
+import time
+import shutil
 
 load_dotenv()
 
@@ -25,10 +26,23 @@ posts = []
 titles = []
 medias = []
 
+if os.path.exists("Images"):
+    shutil.rmtree("Images")
+os.makedirs("Images")
+
 url = "https://www.reddit.com/r/memes/hot/.json"
 r = requests.get(url, headers = {'User-agent': '1'}).json()
 
+try:
+    print('Message = {} and Error = {}'.format(r['message'],r['error']))
+except:
+    pass
+
+limit = 10
+j = 0
 for i in r["data"]["children"]:
+    if j >= limit:
+        break
     if i["data"]["over_18"] == True:
         continue
     if i["data"]["is_video"] == True:
@@ -36,8 +50,22 @@ for i in r["data"]["children"]:
     post = i["data"]["permalink"]
     if post in posts:
         continue
+    posts.append(post)
     title = i["data"]["title"]
+    titles.append(title)
     imageLink = i["data"]["url"]
-    filename = imageLink.split('/')[-1]
+    filename = "Images/"
+    filename+=(imageLink.split('/')[-1])
     r = requests.get(imageLink, allow_redirects=True)
-    open(filename, 'wb').write(r.content)
+    try:
+        open(filename, 'wb').write(r.content)
+        medias.append(filename)
+    except:
+        print("ERROR")
+        exit()
+    j+=1
+    
+DIR = 'Images'
+while(len([name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))])!=10):
+    time.sleep(1)
+
