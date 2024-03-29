@@ -47,9 +47,12 @@ for i in r["data"]["children"]:
     if post in posts:
         continue
     title = i["data"]["title"]
-    with open("past_tweets.txt","r") as file:
-        if title in file:
-            continue
+    file = open("past_tweets.txt")
+    l = file.readlines()
+    if title+"\n" in l:
+        file.close()
+        continue
+    file.close()
     imageLink = i["data"]["url"]
     filename = "Images/"
     filename+=(imageLink.split('/')[-1])
