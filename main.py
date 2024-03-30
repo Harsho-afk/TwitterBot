@@ -7,6 +7,10 @@ from PIL import Image
 import time
 import shutil
 
+if not os.path.exists(".env"):
+    print(".env fils does not exist. Create it with your twitter credentials.")
+    exit()
+
 load_dotenv()
 
 consumer_key = os.getenv('consumer_key')
@@ -68,8 +72,9 @@ for i in r["data"]["children"]:
         posts.append(post)
         titles.append(title)
         medias.append(filename)
-    except:
+    except Exception as error:
         print("ERROR")
+        print(error)
         exit()
     j+=1
     
@@ -103,8 +108,9 @@ try:
     userName = ""
     print("Logged in to {}".format(api.verify_credentials().name))
     userName = api.verify_credentials().screen_name
-except:
+except Exception as error:
     print("AUTH ERROR")
+    print(error)
     exit()
 
 for i in range(10):
@@ -117,6 +123,7 @@ for i in range(10):
         with open('past_tweets.txt','a') as file:
             file.write("{}\n".format(titles[i]))
         time.sleep(8640)
-    except:
+    except Exception as error:
         print("ERROR TWEETING")
+        print(error)
         exit()
