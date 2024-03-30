@@ -21,8 +21,7 @@ bearer_token=os.getenv('bearer_token')
 posts = []
 titles = []
 medias = []
-image_limt = 5242880
-gif_limit = 15728640
+file_limit = 5242880
 
 if not os.path.exists("past_tweets.txt"):
     open("past_tweets.txt",'w')
@@ -63,10 +62,7 @@ for i in r["data"]["children"]:
     r = requests.get(imageLink, allow_redirects=True)
     try:
         open(filename, 'wb').write(r.content)
-        if (filename.split('.')[-1] == 'jpeg' or filename.split('.')[-1] == 'png') and (os.path.getsize(filename=filename) > image_limt):
-            os.remove(filename)
-            continue
-        if (filename.split('.')[-1] == 'gif') and (os.path.getsize(filename=filename) > gif_limit):
+        if os.path.getsize(filename=filename) > file_limit:
             os.remove(filename)
             continue
         posts.append(post)
@@ -77,10 +73,6 @@ for i in r["data"]["children"]:
         print(error)
         exit()
     j+=1
-    
-DIR = 'Images'
-while(len([name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))])!=10):
-    time.sleep(1)
 
 print("Got all the memes")
 
@@ -113,7 +105,7 @@ except Exception as error:
     print(error)
     exit()
 
-for i in range(10):
+for i in range(len(posts)):
     try:
         media_path = medias[i]
         media = api.media_upload(filename=media_path,chunked=True)
