@@ -119,3 +119,5 @@ def main():
             print("ERROR TWEETING")
             print(error)
             exit()
+            
+main()
