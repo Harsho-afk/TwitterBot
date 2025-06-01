@@ -34,7 +34,7 @@ A Twitter bot written in Python that automates posting content on Twitter by fet
    
     Install the required Python packages using pip:
     ```
-    pip install tweepy python-dotenv requests
+    pip install -r requirements.txt
     ```
 
 ## How It Works
